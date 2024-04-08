@@ -32,5 +32,8 @@
     <ClInclude Include="..\src\vec2.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\lib\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

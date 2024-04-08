@@ -1,17 +1,70 @@
 
 #define LITE_GFX_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
 
 #include <litegfx.h>
 #include <glfw3.h>
 #include <iostream>
 #include "Vec2.h"
 #include <string>
+#include "math.h"
+#include "../lib/stb_image.h"
 
 using namespace std;
 
 double deg2rad(double degrees) {
 	return degrees ;
 }
+
+
+ltex_t* loadImg(const char* filename)
+{
+	// carga de imagen
+	int imgX;
+	int imgY;
+	unsigned char* pixels = stbi_load(filename, &imgX, &imgY, nullptr, 4);
+
+	// seteo de tex
+	ltex_t* tex = ltex_alloc(imgX, imgY, 1);
+
+	// crea la representaciona  pixeles de tex
+	ltex_setpixels(tex, pixels);
+
+	return tex;
+}
+
+
+void drawFullScreen(int width, int height, ltex_t* tex)
+{
+	// perdon por estas dos lineas de aqui
+	int contX = std::ceil(static_cast<float>(width)/ static_cast<float>(tex->width));
+	int contY = std::ceil(static_cast<float>(height)/ static_cast<float>(tex->height));
+
+	for (int x = 0; x < contX; ++x)
+	{
+		for (int y = 0; y < contX; ++y)
+		{
+			ltex_draw(tex, x* tex->width, y * tex->height);
+		}
+	}
+}
+
+
+void drawFillingGaps(int width, int height, vec2 location, ltex_t* tex, ltex_t* filler)
+{
+
+}
+
+
+void drawInLocation(vec2 location, ltex_t* tex)
+{
+	// get mid location so that texture spawns in location and not with offset
+	location.x -= tex->width / 2.f;
+	location.y -= tex->height / 2.f;
+	// straight up draw
+	ltex_draw(tex, location.x, location.y);
+}
+
 
 int main() {
 
@@ -21,12 +74,17 @@ int main() {
 
 	int width = 600;
 	int height = 600;
-	const char* title = "P1_RubenSantos";
-
+	const char* title = "P2_Gonzalo_Valenti";
 	GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	glfwMakeContextCurrent(window);
-
 	lgfx_setup2d(width, height);
+
+
+	ltex_t* wall = loadImg("data/wall.jpg");
+	ltex_t* grille = loadImg("data/grille.png");
+	ltex_t* fire = loadImg("data/fire.png");
+	ltex_t* lightMap = loadImg("data/light.png");
+
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -34,52 +92,30 @@ int main() {
 		double DeltaTime = currentTime - time;
 
 		lgfx_clearcolorbuffer(0, 0, 0); //Clear
+	
+		// draw the wall
+		lgfx_setblend(BLEND_SOLID);
+		drawFullScreen(width, height, wall);
 
-		lgfx_setcolor(1, 0, 0, 1); 
-
-		//Cuadrado en el centro de la pantalla
-		vec2 widthAndHeight = vec2(50, 50);
-		lgfx_drawrect(width / 2 - widthAndHeight.x / 2, height / 2 - widthAndHeight.y / 2, widthAndHeight.x, widthAndHeight.y);
-
-
+		// get the blend add and draw the fire in the mouse
 		double mouseX;
 		double mouseY;
 		glfwGetCursorPos(window, &mouseX, &mouseY);
+		lgfx_setblend(BLEND_ADD);
+		drawInLocation(vec2(mouseX, mouseY), fire); //fire looks a little bit offseted but its because of the original img
 
-		//Cuadrado que sigue al raton
-		lgfx_setcolor(0, 1, 0, 1);
-		lgfx_drawrect(static_cast<float>(mouseX) - widthAndHeight.x/2, static_cast<float>(mouseY) - widthAndHeight.y / 2, widthAndHeight.x, widthAndHeight.y);
+		// get the blend to alpha and draw the grille
+		lgfx_setblend(BLEND_ALPHA);
+		drawFullScreen(width, height, grille);
 
-
-		//Circulo que gira sobre el raton
-		double angle = 32 * glfwGetTime(); //Grados por segundo
-
-		if (angle > 360) { angle -= 360; }
-		if (angle < 0) { angle += 360; }
-
-		double angleInRadians = angle * 3.1415926f / 180.0;
-
-		double circleX = mouseX + 100 * cos(angleInRadians);
-		double circleY = mouseY + 100 * sin(angleInRadians);
-
-		lgfx_setcolor(0, 0, 1, 1);
-		lgfx_drawoval(static_cast<float>(circleX) - widthAndHeight.x / 2, static_cast<float>(circleY) - widthAndHeight.y / 2, widthAndHeight.x, widthAndHeight.y);
-
-
-		//Linea
-		lgfx_setcolor(1, 1, 1, 1);
-
-		lgfx_drawline(100, 100, 200, 200);
-
-		//Punto
-		lgfx_drawpoint(400, 400);
-
-		float Distance = vec2(mouseX, mouseY).Distance(vec2(width/2, height/2));
-
-		glfwSetWindowTitle(window, ("GV-> Angle: " + std::to_string(angle) + " Distance: " + std::to_string(Distance)).c_str());
+		// get the blend mul and draw the light
+		lgfx_setblend(BLEND_MUL);
+		drawInLocation(vec2(mouseX, mouseY), lightMap);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		glfwSetWindowTitle(window, ("GV-> Mouse: (" + std::to_string(mouseX) + std::to_string(mouseY) + ")").c_str());
 
 		time = glfwGetTime();
 	}
