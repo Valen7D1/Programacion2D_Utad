@@ -1,1 +1,6 @@
-﻿  programacion2d.vcxproj -> C:\Users\gonzalo.valenti\Documents\MisCosas\Programacion2D_Utad\project\Debug\programacion2d.exe
+﻿  main.cpp
+C:\Users\gonzalo.valenti\Documents\MisCosas\Programacion2D_Utad\src\main.cpp(77,33): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\gonzalo.valenti\Documents\MisCosas\Programacion2D_Utad\src\main.cpp(77,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\gonzalo.valenti\Documents\MisCosas\Programacion2D_Utad\src\main.cpp(77,70): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\gonzalo.valenti\Documents\MisCosas\Programacion2D_Utad\src\main.cpp(77,60): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  programacion2d.vcxproj -> C:\Users\gonzalo.valenti\Documents\MisCosas\Programacion2D_Utad\project\Debug\programacion2d.exe
