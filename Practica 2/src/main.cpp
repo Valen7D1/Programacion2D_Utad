@@ -16,7 +16,6 @@ double deg2rad(double degrees) {
 	return degrees ;
 }
 
-
 ltex_t* loadImg(const char* filename)
 {
 	// carga de imagen
@@ -34,25 +33,36 @@ ltex_t* loadImg(const char* filename)
 }
 
 
-void drawFullScreen(int width, int height, ltex_t* tex)
+
+void drawFullScreen(float width, float height, ltex_t* tex)
 {
 	// perdon por estas dos lineas de aqui
-	int contX = std::ceil(static_cast<float>(width)/ static_cast<float>(tex->width));
-	int contY = std::ceil(static_cast<float>(height)/ static_cast<float>(tex->height));
+	int contX = std::ceil(width/ static_cast<float>(tex->width));
+	int contY = std::ceil(height/ static_cast<float>(tex->height));
 
 	for (int x = 0; x < contX; ++x)
 	{
 		for (int y = 0; y < contX; ++y)
 		{
-			ltex_draw(tex, x* tex->width, y * tex->height);
+			ltex_draw(tex, x* tex->width, y* tex->height);
 		}
 	}
 }
 
 
-void drawFillingGaps(int width, int height, vec2 location, ltex_t* tex, ltex_t* filler)
+void drawFillingGaps(float width, float height, vec2 mouseLocation, ltex_t* tex)
 {
-
+	float Ysize = mouseLocation.y - static_cast<float>(tex->height) / 2.f;
+	float Xsize = mouseLocation.x - static_cast<float>(tex->width) / 2.f;
+ 
+	lgfx_setblend(BLEND_SOLID);
+	lgfx_setcolor(0, 0, 0, 1);
+	lgfx_drawrect(0, 0, Xsize, height);
+	lgfx_drawrect(0, 0, width, Ysize);
+	lgfx_drawrect(width, 0, -(width - (mouseLocation.x + tex->width / 2.f)), height);
+	lgfx_drawrect(0, height, width, -(height - (mouseLocation.y + tex->height / 2.f)));
+ 
+	lgfx_setcolor(1, 1, 1, 1);
 }
 
 
@@ -65,6 +75,16 @@ void drawInLocation(vec2 location, ltex_t* tex)
 	ltex_draw(tex, location.x, location.y);
 }
 
+void drawRotated(vec2 location, ltex_t* tex, float angleOfFire, float scale)
+{
+	// location.x -= tex->width / 2.f;
+	// location.y -= tex->height / 2.f;
+	//ltex_draw(tex, location.x, location.y);
+	//ltex_drawrot(tex, location.x, location.y, angleOfFire, 0.5, 0.5);
+	ltex_drawrotsized(tex, location.x, location.y, angleOfFire, 0.5, 0.5, tex->width, tex->height, 0, 0, 1, 1);
+
+}
+
 
 int main() {
 
@@ -72,24 +92,28 @@ int main() {
 	glfwInit();
 
 
-	int width = 600;
-	int height = 600;
+	float width = 600.f;
+	float height = 600.f;
 	const char* title = "P2_Gonzalo_Valenti";
 	GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 	lgfx_setup2d(width, height);
 
-
+	float angleOfFire = 0.f;
+	float angleRate = 10.f;
+	
 	ltex_t* wall = loadImg("data/wall.jpg");
 	ltex_t* grille = loadImg("data/grille.png");
 	ltex_t* fire = loadImg("data/fire.png");
 	ltex_t* lightMap = loadImg("data/light.png");
+	ltex_t* filler = loadImg("data/filler.png");
 
 
 	while (!glfwWindowShouldClose(window))
 	{
 		double currentTime = glfwGetTime();
 		double DeltaTime = currentTime - time;
+		time = glfwGetTime();
 
 		lgfx_clearcolorbuffer(0, 0, 0); //Clear
 	
@@ -102,7 +126,8 @@ int main() {
 		double mouseY;
 		glfwGetCursorPos(window, &mouseX, &mouseY);
 		lgfx_setblend(BLEND_ADD);
-		drawInLocation(vec2(mouseX, mouseY), fire); //fire looks a little bit offseted but its because of the original img
+		drawRotated(vec2(mouseX, mouseY), fire, angleOfFire, 1.f);
+		//drawInLocation(vec2(mouseX, mouseY), fire); //fire looks a little bit offseted but its because of the original img
 
 		// get the blend to alpha and draw the grille
 		lgfx_setblend(BLEND_ALPHA);
@@ -112,12 +137,20 @@ int main() {
 		lgfx_setblend(BLEND_MUL);
 		drawInLocation(vec2(mouseX, mouseY), lightMap);
 
+		drawFillingGaps(width, height, vec2(mouseX, mouseY), lightMap);
+
+		angleOfFire += angleRate * DeltaTime;
+		if (angleOfFire < -10.f || angleOfFire > 10.f)
+		{
+			angleRate *= -1.f;
+		}
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
-		glfwSetWindowTitle(window, ("GV-> Mouse: (" + std::to_string(mouseX) + std::to_string(mouseY) + ")").c_str());
-
-		time = glfwGetTime();
+		//glfwSetWindowTitle(window, ("GV-> Mouse: (" + std::to_string(mouseX) + std::to_string(mouseY) + ")").c_str());
+		glfwSetWindowTitle(window, ("GV-> Mouse: (" + std::to_string(angleOfFire) + ")").c_str());
+		
 	}
 
 	glfwTerminate();
