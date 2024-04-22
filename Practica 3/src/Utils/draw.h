@@ -1,7 +1,6 @@
 #pragma once
 
 #include <litegfx.h>
-
 class vec2;
 
 double deg2rad(double degrees);

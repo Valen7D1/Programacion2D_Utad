@@ -1,4 +1,6 @@
-#include "litegfx.h"
+#define LITE_GFX_IMPLEMENTATION
+
+#include "draw.h"
 #include "stb_image.h"
 #include <iostream>
 #include "Vec2.h"

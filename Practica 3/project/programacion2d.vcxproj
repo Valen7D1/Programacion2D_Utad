@@ -96,7 +96,7 @@
       <AdditionalIncludeDirectories>../lib</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
-    <ClCompile Include="..\src\Utils\text.cpp" />
+    <ClCompile Include="..\src\Utils\Font.cpp" />
     <ClCompile Include="..\src\Utils\vec2.cpp">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -181,7 +181,7 @@
     <ClInclude Include="..\lib\stb_image.h" />
     <ClInclude Include="..\lib\stb_truetype.h" />
     <ClInclude Include="..\src\Utils\draw.h" />
-    <ClInclude Include="..\src\Utils\text.h" />
+    <ClInclude Include="..\src\Utils\Font.h" />
     <ClInclude Include="..\src\Utils\vec2.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

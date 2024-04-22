@@ -1,13 +1,9 @@
-#define LITE_GFX_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
-
 #include <glfw3.h>
 #include <iostream>
-#include "Vec2.h"
+#include "Utils/Vec2.h"
 #include <string>
-#include "math.h"
-#include "../lib/stb_image.h"
-#include "draw.h"
+#include "Utils/draw.h"
+#include "Utils/Font.h"
 
 using namespace std;
 
@@ -17,7 +13,9 @@ int main() {
 	double time = glfwGetTime();
 	glfwInit();
 
-
+	stbtt_bakedchar* AlphaBuffer = SetFont("data/Orange.ttf");
+	
+	
 	float width = 600.f;
 	float height = 600.f;
 	const char* title = "P2_Gonzalo_Valenti";
