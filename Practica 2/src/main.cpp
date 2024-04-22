@@ -75,14 +75,9 @@ void drawInLocation(vec2 location, ltex_t* tex)
 	ltex_draw(tex, location.x, location.y);
 }
 
-void drawRotated(vec2 location, ltex_t* tex, float angleOfFire, float scale)
+void drawRotatedSized(vec2 location, ltex_t* tex, float angleOfFire, float scale)
 {
-	// location.x -= tex->width / 2.f;
-	// location.y -= tex->height / 2.f;
-	//ltex_draw(tex, location.x, location.y);
-	//ltex_drawrot(tex, location.x, location.y, angleOfFire, 0.5, 0.5);
-	ltex_drawrotsized(tex, location.x, location.y, angleOfFire, 0.5, 0.5, tex->width, tex->height, 0, 0, 1, 1);
-
+	ltex_drawrotsized(tex, location.x, location.y, angleOfFire, 0.5, 0.5, tex->width * scale, tex->height * scale, 0, 0, 1, 1);
 }
 
 
@@ -101,6 +96,9 @@ int main() {
 
 	float angleOfFire = 0.f;
 	float angleRate = 10.f;
+
+	float scaleOfFire = 1.f;
+	float scaleRate = 0.2f;
 	
 	ltex_t* wall = loadImg("data/wall.jpg");
 	ltex_t* grille = loadImg("data/grille.png");
@@ -113,7 +111,7 @@ int main() {
 	{
 		double currentTime = glfwGetTime();
 		double DeltaTime = currentTime - time;
-		time = glfwGetTime();
+		time = currentTime;
 
 		lgfx_clearcolorbuffer(0, 0, 0); //Clear
 	
@@ -126,7 +124,7 @@ int main() {
 		double mouseY;
 		glfwGetCursorPos(window, &mouseX, &mouseY);
 		lgfx_setblend(BLEND_ADD);
-		drawRotated(vec2(mouseX, mouseY), fire, angleOfFire, 1.f);
+		drawRotatedSized(vec2(mouseX, mouseY), fire, angleOfFire, scaleOfFire);
 		//drawInLocation(vec2(mouseX, mouseY), fire); //fire looks a little bit offseted but its because of the original img
 
 		// get the blend to alpha and draw the grille
@@ -143,13 +141,21 @@ int main() {
 		if (angleOfFire < -10.f || angleOfFire > 10.f)
 		{
 			angleRate *= -1.f;
+			angleOfFire += angleRate * DeltaTime;
+		}
+
+		scaleOfFire += scaleRate * DeltaTime;
+		if (scaleOfFire < 0.8f || scaleOfFire > 1.f)
+		{
+			scaleRate *= -1.f;
+			scaleOfFire += scaleRate * DeltaTime;
 		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
 		//glfwSetWindowTitle(window, ("GV-> Mouse: (" + std::to_string(mouseX) + std::to_string(mouseY) + ")").c_str());
-		glfwSetWindowTitle(window, ("GV-> Mouse: (" + std::to_string(angleOfFire) + ")").c_str());
+		glfwSetWindowTitle(window, ("GV-> Mouse: (" + std::to_string(scaleOfFire) + ")").c_str());
 		
 	}
 
