@@ -23,8 +23,11 @@
     <ClCompile Include="..\src\vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\lib\glfw3.h" />
+    <ClInclude Include="..\lib\glfw3native.h" />
     <ClInclude Include="..\lib\litegfx.h" />
     <ClInclude Include="..\lib\stb_image.h" />
+    <ClInclude Include="..\lib\stb_truetype.h" />
     <ClInclude Include="..\src\vec2.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
