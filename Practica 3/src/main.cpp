@@ -14,6 +14,7 @@ int main() {
 	glfwInit();
 
 	stbtt_bakedchar* AlphaBuffer = SetFont("data/Orange.ttf");
+
 	
 	
 	float width = 600.f;
