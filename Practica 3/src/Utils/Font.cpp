@@ -1,62 +1,109 @@
-#define STB_IMAGE_IMPLEMENTATION
+#include "Font.h"
+
 #define STB_TRUETYPE_IMPLEMENTATION
 
-#include "Font.h"
+#include "stb_truetype.h"
 #include <cstdio>
-#include "draw.h"
-#include "../lib/stb_image.h"
+#include <stb_image.h>
+#include <litegfx.h>
 
 
-stbtt_bakedchar* SetFont(const char* Filename)
+Font::Font():
+    tex(new ltex_t()),
+    fontdata(new stbtt_bakedchar[256])
 {
-    FILE* FontFile;
-    errno_t Error = fopen_s(&FontFile, Filename, "r"); // Open in binary mode
+}
 
-    if (FontFile != nullptr)
+
+Font::~Font()
+{
+    delete[] fontdata;
+    delete tex;
+}
+
+
+Font* Font::load(const char* filename, float height)
+{
+    FILE* fontFile = nullptr;
+    errno_t error = fopen_s(&fontFile, filename, "rb");
+
+    if (!fontFile)
     {
-        fseek(FontFile, 0, SEEK_END);
-        unsigned long const FileSize = ftell(FontFile);
-        fseek(FontFile, 0, SEEK_SET);
-
-        // Allocate memory to hold the font data
-        unsigned char* CharBuffer = new unsigned char[FileSize];
-        unsigned char* AlphaBuffer = new unsigned char[FileSize];
-
-        // Read the font data into the buffer
-        size_t bytesRead = fread_s(CharBuffer, FileSize, sizeof(char), FileSize, FontFile);
-        fclose(FontFile);
-
-        stbtt_bakedchar* FontData = new stbtt_bakedchar[FileSize * sizeof(stbtt_bakedchar)];
-        stbtt_BakeFontBitmap(CharBuffer, 0, 56, AlphaBuffer, 512, 512, 32, 255, FontData);
-        delete[] CharBuffer;
-
-        unsigned char* ColorBuffer = new unsigned char[FileSize * 4];
-
-        int AlphaIndex = 0;
-        for (int i = 0; i < FileSize; ++i)
-        {
-            if (i % 3 == 0)
-            {
-                ColorBuffer[i] = AlphaBuffer[AlphaIndex];
-                ++AlphaIndex;
-            }
-            else
-            {
-                ColorBuffer[i] = 1;
-            }
-        }
-
-        ltex_t* tex = ltex_alloc(512, 512, 1);
-        ltex_setpixels(tex, ColorBuffer);
-
-        stbtt_GetBakedQuad();
-        
-        return FontData;
+        return nullptr;
     }
-    else
-    {
-        printf("Error opening font file\n");
-    }
+    
+    fseek(fontFile, 0, SEEK_END);
+    unsigned long const FileSize = ftell(fontFile);
+    fseek(fontFile, 0, SEEK_SET);
 
-    return nullptr;
+    // create Font obj
+    Font* newFont = new Font();
+    newFont->m_height = height;
+
+    // Allocate memory to hold the font data
+    unsigned char* fontBuffer = new unsigned char[sizeof(char) * FileSize];
+
+    // Read the font data into the buffer
+    size_t bytesRead = fread_s(fontBuffer, FileSize, sizeof(char), FileSize, fontFile);
+    fclose(fontFile);
+
+    // Ruben values Todo: Ask Juan
+    const unsigned int alphaSize = 512 * 512;
+    unsigned char* alphaBuffer = new unsigned char[alphaSize];
+	
+    stbtt_BakeFontBitmap(fontBuffer, 0, 56, alphaBuffer, 512, 512, 32, 255, newFont->fontdata);
+
+	// create color buffer (4x rgb + alpha)
+	const unsigned int colorSize = alphaSize * 4;
+	unsigned char* colorBuffer = new unsigned char[colorSize];
+	
+	
+    //Random color (thx ruben)
+	unsigned int* colorRGB = new unsigned int[3];
+	colorRGB[0] = rand() % 255u;
+	colorRGB[1] = rand() % 255u;
+	colorRGB[2] = rand() % 255u;
+
+	int AlphaIndex = 0; // id for alpha values
+	for (size_t i = 0; i < colorSize; i++)
+	{
+		if (i % 4 == 3) 
+		{
+			colorBuffer[i] =  alphaBuffer[AlphaIndex++];
+		}
+		else
+		{
+			colorBuffer[i] = colorRGB[i % 4];
+		}
+	}
+	
+	//again ruben values todo: Ask juan
+	newFont->tex = ltex_alloc(512, 512, 0);
+	lgfx_setblend(BLEND_ALPHA); // set blend mode
+	ltex_setpixels(newFont->tex, colorBuffer);
+
+	// clean memory
+	delete[] fontBuffer;
+	delete[] alphaBuffer;
+	delete[] colorBuffer;
+	delete[] colorRGB;
+
+	return newFont;
+}
+
+vec2 Font::getTextSize(const char* text) const
+{
+	return vec2(tex->height, tex->width);
+}
+
+void Font::draw(const char* text, const vec2& pos) const
+{
+	// copy to use without the const
+	vec2 position = pos;
+	for (const char* character = text; *character != '\0'; ++character) {
+		stbtt_aligned_quad q;
+		stbtt_GetBakedQuad(fontdata, 512, 512, *character - 32, &position.x, &position.y, &q, true);
+
+		ltex_draw(tex, position.x, position.y);
+	}
 }

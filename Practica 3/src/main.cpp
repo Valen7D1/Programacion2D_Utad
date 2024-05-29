@@ -1,24 +1,26 @@
+#define LITE_GFX_IMPLEMENTATION
+
 #include <glfw3.h>
 #include <iostream>
 #include "Utils/Vec2.h"
 #include <string>
-#include "Utils/draw.h"
-#include "Utils/Font.h"
+#include <iostream>
+#include "Utils/texture.h"
+#include <vector>
 
 using namespace std;
 
+	
+const int width = 600.f;
+const int height = 600.f;
 
 int main() {
 
 	double time = glfwGetTime();
 	glfwInit();
 
-	stbtt_bakedchar* AlphaBuffer = SetFont("data/Orange.ttf");
-
+	Font* newFont = Font::load("data/Orange.ttf", 60);
 	
-	
-	float width = 600.f;
-	float height = 600.f;
 	const char* title = "P2_Gonzalo_Valenti";
 	GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	glfwMakeContextCurrent(window);
@@ -34,12 +36,12 @@ int main() {
 		lgfx_clearcolorbuffer(0, 0, 0); //Clear
 		
 
-		// get the blend add and draw the fire in the mouse
+		newFont->draw("hello world", vec2(200, 200));
+
+
 		double mouseX;
 		double mouseY;
 		glfwGetCursorPos(window, &mouseX, &mouseY);
-
-
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -49,9 +51,6 @@ int main() {
 	}
 
 	glfwTerminate();
-
-	//Sleep(10000);
-
 
 	return 0;
 }

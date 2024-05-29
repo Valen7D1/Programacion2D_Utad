@@ -1,4 +1,0 @@
-C:\Users\gonzalo.valenti\Downloads\plantilla\project\Debug\programacion2d.exe
-C:\Users\gonzalo.valenti\Documents\MisCosas\Programacion2D_Utad\project\Debug\programacion2d.exe
-C:\Users\gonzalo.valenti\Documents\MisCosas\Programacion2D_Utad\Practica 2\project\Debug\programacion2d.exe
-C:\Users\gonzalo.valenti\Documents\MisCosas\Programacion2D_Utad\Practica 3\project\Debug\programacion2d.exe
