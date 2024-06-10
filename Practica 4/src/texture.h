@@ -1,12 +1,10 @@
-#define LITE_GFX_IMPLEMENTATION
-
-#include "draw.h"
-#include "stb_image.h"
+#pragma once
+#define STB_IMAGE_IMPLEMENTATION
 #include <iostream>
 #include "Vec2.h"
+#include "../lib/stb_image.h"
+#include "Font.h"
 
-
-using namespace std;
 
 double deg2rad(double degrees) {
     return degrees ;
