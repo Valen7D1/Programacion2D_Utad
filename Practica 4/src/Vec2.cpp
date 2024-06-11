@@ -98,3 +98,8 @@ float vec2::Distance(const vec2& other) const
 	float distY = other.y - y;
 	return sqrt(distX * distX + distY * distY);
 }
+
+float vec2::length() const
+{
+	return std::sqrt(x * x + y * y);
+}

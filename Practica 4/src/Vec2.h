@@ -24,6 +24,8 @@ public:
 
 	float Angle(const vec2& other) const;
 	float Distance(const vec2& other) const;
+	float length()const;
+
 
 	float x;
 	float y;

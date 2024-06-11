@@ -30,7 +30,8 @@ void My_Bee::Update(float DeltaTime)
     if (m_Sprite)
     {
         vec2 const Target = Manager::getInstance()->GetMousePosition();
-        m_Data->Location = Utils::Lerp(m_Data->Location, Target,  m_MoveSpeed * DeltaTime);
+        vec2 const Speed = m_MoveSpeed * DeltaTime;
+        m_Data->Location = Utils::Lerp(m_Data->Location, Target, Speed);
         
         m_Sprite->update(DeltaTime);
     }
