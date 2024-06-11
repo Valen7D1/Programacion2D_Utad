@@ -22,6 +22,16 @@ vec2 vec2::operator*(const float& value)
 	return vec2(x * value, y * value);
 }
 
+bool vec2::operator!=(const vec2& otherVector)
+{
+	return (x != otherVector.x && y != otherVector.y);
+}
+
+bool vec2::operator==(const vec2& otherVector)
+{
+	return (x == otherVector.x && y == otherVector.y);
+}
+
 
 vec2 vec2::operator+(const vec2& otherVector)
 {

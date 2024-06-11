@@ -24,6 +24,7 @@
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\manager.cpp" />
     <ClCompile Include="..\src\sprite.cpp" />
+    <ClCompile Include="..\src\utils.cpp" />
     <ClCompile Include="..\src\Vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -33,6 +34,7 @@
     <ClInclude Include="..\src\Font.h" />
     <ClInclude Include="..\src\manager.h" />
     <ClInclude Include="..\src\sprite.h" />
+    <ClInclude Include="..\src\utils.h" />
     <ClInclude Include="..\src\Vec2.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

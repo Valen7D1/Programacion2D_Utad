@@ -2,6 +2,7 @@
 
 #include "sprite.h"
 #include "manager.h"
+#include "utils.h"
 
 
 // Entity::~Entity()
@@ -28,11 +29,8 @@ void My_Bee::Update(float DeltaTime)
 {
     if (m_Sprite)
     {
-        vec2 Target = Manager::getInstance()->GetMousePosition();
-        vec2 Direction =  Target - m_Data->Location;
-        Direction.Normalize();
-        
-        m_Data->Location = m_Data->Location + Direction * m_MoveSpeed * DeltaTime;
+        vec2 const Target = Manager::getInstance()->GetMousePosition();
+        m_Data->Location = Utils::Lerp(m_Data->Location, Target,  m_MoveSpeed * DeltaTime);
         
         m_Sprite->update(DeltaTime);
     }

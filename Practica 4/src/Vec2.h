@@ -9,6 +9,9 @@ public:
 
 	vec2 operator*(const float& value);
 
+	bool operator!=(const vec2& otherVector);
+	bool operator==(const vec2& otherVector);
+	
 	vec2 operator+(const vec2& otherVector);
 	vec2 operator-(const vec2& otherVector);
 	vec2 operator*(const vec2& otherVector);
