@@ -60,15 +60,19 @@ Font* Font::load(const char* filename, float height)
 	
     //Random color (thx ruben)
 	unsigned int* colorRGB = new unsigned int[3];
-	colorRGB[0] = rand() % 255u;
-	colorRGB[1] = rand() % 255u;
-	colorRGB[2] = rand() % 255u;
+	newFont->r = colorRGB[0] = rand() % 255u / 255u;
+	newFont->g = colorRGB[1] = rand() % 255u / 255u;
+	newFont->b = colorRGB[2] = rand() % 255u / 255u;
 
 	int AlphaIndex = 0; // id for alpha values
 	for (size_t i = 0; i < colorSize; i++)
 	{
 		if (i % 4 == 3) 
 		{
+			// if (int temp =  alphaBuffer[AlphaIndex] != 0)
+			// {
+			// 	temp ++;
+			// }
 			colorBuffer[i] =  alphaBuffer[AlphaIndex++];
 		}
 		else
@@ -79,7 +83,6 @@ Font* Font::load(const char* filename, float height)
 	
 	//again ruben values todo: Ask juan
 	newFont->tex = ltex_alloc(512, 512, 0);
-	lgfx_setblend(BLEND_ALPHA); // set blend mode
 	ltex_setpixels(newFont->tex, colorBuffer);
 
 	// clean memory
@@ -98,12 +101,13 @@ vec2 Font::getTextSize(const char* text) const
 
 void Font::draw(const char* text, const vec2& pos) const
 {
-	// copy to use without the const
-	vec2 position = pos;
+	float posX = pos.x;
+	float posY = pos.y;
+	stbtt_aligned_quad* q = new stbtt_aligned_quad;
+	lgfx_setblend(BLEND_ALPHA);
 	for (const char* character = text; *character != '\0'; ++character) {
-		stbtt_aligned_quad q;
-		stbtt_GetBakedQuad(fontdata, 512, 512, *character - 32, &position.x, &position.y, &q, true);
-
-		ltex_draw(tex, position.x, position.y);
+		stbtt_GetBakedQuad(fontdata, 512, 512, *character - 32, &posX, &posY, q, true);
+		lgfx_setcolor(0.5, 1, 1, 1);
+		ltex_drawrotsized(tex, q->x0, q->y0, 0, 0, 0, q->x1 - q->x0, q->y1 - q->y0, q->s0, q->t0, q->s1, q->t1);
 	}
 }

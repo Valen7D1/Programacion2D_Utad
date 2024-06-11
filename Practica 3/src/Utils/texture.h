@@ -16,7 +16,6 @@ ltex_t* loadImg(const char* filename)
     int imgX;
     int imgY;
     unsigned char* pixels = stbi_load(filename, &imgX, &imgY, nullptr, 4);
-
     // seteo de tex
     ltex_t* tex = ltex_alloc(imgX, imgY, 1);
 

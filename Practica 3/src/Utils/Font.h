@@ -23,6 +23,8 @@ public:
     ltex_t* tex;
     stbtt_bakedchar* fontdata;
 
+    float r,g,b,a;
+
 private:
    float m_height;
 };

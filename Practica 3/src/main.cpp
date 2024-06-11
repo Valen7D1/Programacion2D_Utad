@@ -35,10 +35,8 @@ int main() {
 
 		lgfx_clearcolorbuffer(0, 0, 0); //Clear
 		
-
 		newFont->draw("hello world", vec2(200, 200));
-
-
+		
 		double mouseX;
 		double mouseY;
 		glfwGetCursorPos(window, &mouseX, &mouseY);
