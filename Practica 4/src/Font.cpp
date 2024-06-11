@@ -1,18 +1,19 @@
-#include "Font.h"
-
+#define LITE_GFX_IMPLEMENTATION
 #define STB_TRUETYPE_IMPLEMENTATION
 
-#include "stb_truetype.h"
+#include "Font.h"
+
 #include <cstdio>
-#include <stb_image.h>
-#include <litegfx.h>
+#include <cstdlib>
+#include "Vec2.h"
+
+
 
 
 Font::Font():
     tex(new ltex_t()),
     fontdata(new stbtt_bakedchar[256])
-{
-}
+{}
 
 
 Font::~Font()

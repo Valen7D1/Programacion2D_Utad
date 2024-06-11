@@ -19,17 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Entity.cpp" />
     <ClCompile Include="..\src\Font.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\manager.cpp" />
     <ClCompile Include="..\src\sprite.cpp" />
     <ClCompile Include="..\src\Vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\litegfx.h" />
     <ClInclude Include="..\lib\stb_image.h" />
+    <ClInclude Include="..\src\Entity.h" />
     <ClInclude Include="..\src\Font.h" />
+    <ClInclude Include="..\src\manager.h" />
     <ClInclude Include="..\src\sprite.h" />
-    <ClInclude Include="..\src\texture.h" />
     <ClInclude Include="..\src\Vec2.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

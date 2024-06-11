@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../lib/stb_truetype.h"
-#include "vec2.h"
+#include "stb_truetype.h"
 #include <litegfx.h>
+
+class vec2;
 
 stbtt_bakedchar* SetFont(const char* Filename);
 

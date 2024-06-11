@@ -7,6 +7,8 @@ public:
 	vec2(float _x, float _y);
 	~vec2();
 
+	vec2 operator*(const float& value);
+
 	vec2 operator+(const vec2& otherVector);
 	vec2 operator-(const vec2& otherVector);
 	vec2 operator*(const vec2& otherVector);

@@ -17,6 +17,12 @@ vec2::~vec2()
 {
 }
 
+vec2 vec2::operator*(const float& value)
+{
+	return vec2(x * value, y * value);
+}
+
+
 vec2 vec2::operator+(const vec2& otherVector)
 {
 	return vec2(x + otherVector.x, y + otherVector.y);
@@ -52,7 +58,7 @@ void vec2::Normalize()
 	float mag = Magnitude();
 	if (mag != 0)
 	{
-		x /= x / mag;
+		x /=  mag;
 		y /= mag;
 	}
 }
