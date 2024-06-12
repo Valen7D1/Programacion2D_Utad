@@ -5,11 +5,11 @@
 #include "utils.h"
 
 
-// Entity::~Entity()
-// {
-//      delete m_Sprite;
-//      delete m_Data;
-// }
+Entity::~Entity()
+{
+     delete m_Sprite;
+     delete m_Data;
+}
 
 My_Bee::My_Bee() : Entity()
 {
@@ -19,10 +19,10 @@ My_Bee::My_Bee() : Entity()
     m_Data = BeeData;
 }
 
-// My_Bee::~My_Bee()
-// {
-//      
-// }
+My_Bee::~My_Bee()
+{
+     
+}
 
 
 void My_Bee::Update(float DeltaTime)
@@ -32,6 +32,26 @@ void My_Bee::Update(float DeltaTime)
         vec2 const Target = Manager::getInstance()->GetMousePosition();
         vec2 const Speed = m_MoveSpeed * DeltaTime;
         m_Data->Location = Utils::Lerp(m_Data->Location, Target, Speed);
+
+        // direction control (todo: a better direction control for both axis)
+        if (m_Data->Location.x < Target.x && m_Data->Scale.x < 0.f)
+        {
+            m_Data->Scale.x *= -1.f;
+            m_RotationTarget *= -1.f;
+            m_RotationSpeed *= -1.f;
+        }
+        if (m_Data->Location.x > Target.x && m_Data->Scale.x > 0.f)
+        {
+            m_Data->Scale.x *= -1.f;
+            m_RotationTarget *= -1.f;
+            m_RotationSpeed *= -1.f;
+        }
+        
+        if ( m_Data->Location != Target)
+        {
+            
+            m_Data->Angle = Utils::Lerp(m_Data->Angle, m_RotationTarget, m_RotationSpeed * DeltaTime);
+        }
         
         m_Sprite->update(DeltaTime);
     }

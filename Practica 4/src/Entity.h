@@ -8,7 +8,7 @@ class Entity
 {
 public:
     Entity() = default;
-    //virtual ~Entity();
+    virtual ~Entity();
 protected:
     Sprite* m_Sprite = nullptr;
     EData* m_Data = nullptr;
@@ -22,10 +22,11 @@ class My_Bee : public Entity
 {
 public:
     My_Bee();
-    //virtual ~My_Bee() override;
+    virtual ~My_Bee() override;
     virtual void Update(float DeltaTime) override;
 
 private:
     vec2 m_MoveSpeed = vec2(128.f, 128.f);
-    float m_RotationSpeed = 32.f;
+    float m_RotationSpeed = -32.f;
+    float m_RotationTarget = -15.f;
 };

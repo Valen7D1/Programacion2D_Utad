@@ -19,12 +19,19 @@ vec2 Utils::Lerp(vec2 CurrentLocation, vec2 TargetLocation, vec2 Speed)
         return TargetLocation;
     }
     Direction.Normalize();
-    vec2 NewPosition = CurrentLocation + Direction * Speed;
+    vec2 const NewPosition = CurrentLocation + Direction * Speed;
     return NewPosition;
 }
 
 
 float Utils::Lerp(float CurrentRotation, float TargetRotation, float Speed)
 {
-    return CurrentRotation;
+    float const Distance = TargetRotation - CurrentRotation;
+
+    if (abs(Distance) < abs(Speed))
+    {
+        return TargetRotation;
+    }
+    float const NewRotation = CurrentRotation + Speed;
+    return NewRotation;
 }

@@ -8,6 +8,8 @@ struct EData {
     Pivot(_pivot),
     Size(_size),
     Angle(angle){}
+
+    ~EData() = default;
     
     vec2 Location;
     vec2 Scale;

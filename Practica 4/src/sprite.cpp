@@ -10,10 +10,12 @@ void Color::SetColor()
     lgfx_setcolor(r, g, b, a);
 }
 
-inline Sprite::~Sprite()
+
+Sprite::~Sprite()
 {
     delete m_Texture;
 }
+
 
 void Sprite::setTexture(ltex_t* tex, int hframes, int vframes)
 {
@@ -21,6 +23,7 @@ void Sprite::setTexture(ltex_t* tex, int hframes, int vframes)
     m_HFrames = hframes;
     m_VFrames = vframes;
 }
+
 
 void Sprite::update(float deltaTime)
 {
@@ -67,6 +70,7 @@ void Sprite::draw() const
     m_Data->Size.x * m_Data->Scale.x, m_Data->Size.y * m_Data->Scale.y,
     m_TopLeft.x, m_TopLeft.y, m_BotRight.x, m_BotRight.y);
 }
+
 
 ltex_t* Sprite::loadImage(const char* filename)
 {
