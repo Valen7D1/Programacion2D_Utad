@@ -2,6 +2,7 @@
 #include <cstdint>
 
 #include "vec2.h"
+#include "litegfx.h"
 
 class EData;
 
@@ -29,20 +30,34 @@ protected:
     bool checkCircleRect(const vec2& circlePos, float circleRadius, const vec2& rectPos, const vec2& rectSize);
     bool checkRectRect(const vec2& rectPos1, const vec2& rectSize1, const vec2& rectPos2, const vec2& rectSize2);
     bool checkCirclePixels(const vec2& circlePos, float circleRadius, const vec2& pixelsPos, const vec2& pixelsSize, const uint8_t* pixels);
-    bool checkPixelsPixels( const vec2& pixelsPos1, const vec2& pixelsSize1, const
-    uint8_t* pixels1, const vec2& pixelsPos2, const vec2& pixelsSize2, const uint8_t* pixels2);
+    bool checkPixelsPixels( const vec2& pixelsPos1, const vec2& pixelsSize1, const uint8_t* pixels1, const vec2& pixelsPos2, const vec2& pixelsSize2, const uint8_t* pixels2);
     bool checkPixelsRect( const vec2& pixelsPos, const vec2& pixelsSize, const uint8_t* pixels, const vec2& rectPos, const vec2& rectSize);
     
-    virtual bool collides(const Collider& other) const = 0;
+    virtual bool collides(const Collider& other) = 0;
+    virtual bool collides(const vec2& circlePos, float circleRadius) = 0;
+    virtual bool collides(const vec2& rectPos, const vec2& rectSize) = 0;
+    virtual bool collides(const vec2& pixelsPos, const vec2& pixelsSize, const uint8_t* pixels) = 0;
+
+public:
+    void setCollisionType (CollisionType _type) { m_CollisionType = _type; }
+    CollisionType getCollisionType () const { return m_CollisionType; }
+    const Collider* getCollider () const { return this; }
 };
 
 class CircleCollider : public Collider
 {
 public:
-    CircleCollider(EData* _data) : Collider(_data, CollisionType::COLLISION_CIRCLE) {}
+    CircleCollider(EData* _data, ltex_t* _tex);
     ~CircleCollider() override = default;
     
-    virtual bool collides(const Collider& other) const override;
+    virtual bool collides(const Collider& other) override;
+    virtual bool collides(const vec2& circlePos, float circleRadius) override;
+    virtual bool collides(const vec2& rectPos, const vec2& rectSize) override;
+    virtual bool collides(const vec2& pixelsPos, const vec2& pixelsSize, const uint8_t* pixels) override;
+
+public:
+    float m_Radius;
+    
 };
 
 class RectCollider  : public Collider
@@ -51,7 +66,13 @@ public:
     RectCollider (EData* _data) : Collider(_data, CollisionType::COLLISION_RECT) {}
     ~RectCollider () override = default;
 
-    virtual bool collides(const Collider& other) const override;
+    virtual bool collides(const Collider& other) override;
+    virtual bool collides(const vec2& circlePos, float circleRadius) override;
+    virtual bool collides(const vec2& rectPos, const vec2& rectSize) override;
+    virtual bool collides(const vec2& pixelsPos, const vec2& pixelsSize, const uint8_t* pixels) override;
+
+public:
+    vec2 m_RectSize;
 };
 
 
@@ -61,7 +82,10 @@ public:
     PixelsCollider(EData* _data) : Collider(_data, CollisionType::COLLISION_PIXELS) {}
     ~PixelsCollider() override = default;
 
-    virtual bool collides(const Collider& other) const override;
+    virtual bool collides(const Collider& other) override;
+    virtual bool collides(const vec2& circlePos, float circleRadius) override;
+    virtual bool collides(const vec2& rectPos, const vec2& rectSize) override;
+    virtual bool collides(const vec2& pixelsPos, const vec2& pixelsSize, const uint8_t* pixels) override;
 };
 
 

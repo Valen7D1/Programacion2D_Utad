@@ -1,4 +1,3 @@
-#include <glfw3.h>
 #include <string>
 
 #include "Entity.h"
@@ -21,25 +20,23 @@ int main() {
 	glfwMakeContextCurrent(window);
 	lgfx_setup2d(width, height);
 
-	My_Bee* MyBee = new My_Bee();
-
-	ltex_t* Test = Sprite::loadImage("data/bee_anim.png");
+	// Entities creation
 	Manager* manager = Manager::getInstance();
+	manager->m_Window = window;
+	manager->AddEntity(new My_Cursor());
+	manager->AddEntity(new My_Bee());
+
+	
 	double time = glfwGetTime();
 	while (!glfwWindowShouldClose(window))
 	{
 		lgfx_clearcolorbuffer(0, 0, 0);
-		double currentTime = glfwGetTime();
-		double DeltaTime = currentTime - time;
+		double const currentTime = glfwGetTime();
+		double const DeltaTime = currentTime - time;
 		time = currentTime;
 
-		// mouse location store (should go in manager)
-		double mouseX;
-		double mouseY;
-		glfwGetCursorPos(window, &mouseX, &mouseY);
-		manager->SetMousePosition(mouseX, mouseY);
-
-		MyBee->Update(static_cast<float>(DeltaTime));
+		//MyBee->Update(static_cast<float>(DeltaTime));
+		manager->Update(static_cast<float>(DeltaTime));
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
