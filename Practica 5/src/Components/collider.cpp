@@ -1,6 +1,25 @@
 #include "collider.h"
 
-#include "manager.h"
+#include "../manager.h"
+
+
+
+Collider* Collider::CreateCollider(CollisionType _type, ltex_t* _tex, EData* _data)
+{
+    Collider * Temp = nullptr;
+    switch (_type) {
+    case COLLISION_NONE:
+        return nullptr;
+    case COLLISION_CIRCLE:
+        return new CircleCollider(_data,  _tex);
+    case COLLISION_RECT:
+        return new RectCollider(_data,  _tex);
+    case COLLISION_PIXELS:
+        Temp = new PixelsCollider(_data, _tex);
+        break;
+    }
+    return Temp;
+}
 
 
 #pragma region AllColliders
@@ -43,8 +62,7 @@ bool Collider::checkPixelsRect(const vec2& pixelsPos, const vec2& pixelsSize, co
 
 #pragma region CircleCollider
 
-
-CircleCollider::CircleCollider(EData* _data, ltex_t* _tex) : Collider(_data, CollisionType::COLLISION_CIRCLE)
+CircleCollider::CircleCollider(EData* _data, ltex_t* _tex) : Collider(_data, COLLISION_CIRCLE)
 {
     if (_tex->height > _tex->width)
     {

@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-#include "vec2.h"
+#include "../vec2.h"
 #include "litegfx.h"
 
 class EData;
@@ -20,6 +20,8 @@ public:
     Collider(EData* _data, CollisionType _type) :
         m_Data(_data), m_CollisionType(_type){}
     virtual ~Collider() = default;
+
+    static Collider* CreateCollider(CollisionType _type, ltex_t* _tex, EData* _data);
     
 protected:
     EData* m_Data = nullptr;
@@ -63,7 +65,7 @@ public:
 class RectCollider  : public Collider
 {
 public:
-    RectCollider (EData* _data) : Collider(_data, CollisionType::COLLISION_RECT) {}
+    RectCollider (EData* _data, ltex_t* _tex) : Collider(_data, COLLISION_RECT) {}
     ~RectCollider () override = default;
 
     virtual bool collides(const Collider& other) override;
@@ -79,7 +81,7 @@ public:
 class PixelsCollider : public Collider
 {
 public:
-    PixelsCollider(EData* _data) : Collider(_data, CollisionType::COLLISION_PIXELS) {}
+    PixelsCollider(EData* _data, ltex_t* _tex) : Collider(_data, COLLISION_PIXELS) {}
     ~PixelsCollider() override = default;
 
     virtual bool collides(const Collider& other) override;

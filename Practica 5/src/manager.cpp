@@ -1,6 +1,6 @@
 #include "manager.h"
 
-#include "Entity.h"
+#include "Components/Entity.h"
 
 Manager* Manager::instance = nullptr;
 

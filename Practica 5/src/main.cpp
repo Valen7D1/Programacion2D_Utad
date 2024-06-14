@@ -1,8 +1,9 @@
 #include <string>
 
-#include "Entity.h"
-#include "sprite.h"
+#include "Components/Entity.h"
+#include "Components/sprite.h"
 #include "manager.h"
+#include "Components/collider.h"
 
 using namespace std;
 
@@ -24,7 +25,8 @@ int main() {
 	Manager* manager = Manager::getInstance();
 	manager->m_Window = window;
 	manager->AddEntity(new My_Cursor());
-	manager->AddEntity(new My_Bee());
+	manager->AddEntity(new FollowCursor());
+	manager->AddEntity(new StaticEntity("data/ball.png", COLLISION_CIRCLE));
 
 	
 	double time = glfwGetTime();

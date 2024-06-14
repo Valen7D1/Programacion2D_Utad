@@ -14,7 +14,8 @@ struct EData {
     Angle(angle){}
 
     ~EData() = default;
-    
+
+    vec2 TempLocation = vec2();
     vec2 Location;
     vec2 Scale;
     vec2 Pivot;
