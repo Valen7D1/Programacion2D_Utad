@@ -4,8 +4,9 @@
 enum CollisionType : int;
 class Movement;
 class Sprite;
-class EData;
 class Collider;
+
+struct EData;
 
 class Entity
 {
@@ -15,6 +16,10 @@ public:
     virtual void Update(float DeltaTime) = 0;
 
     Collider* GetCollider() const { return m_Collider; }
+    EData* GetData() const { return m_Data; }
+    
+    void SetSprite(Sprite* _sprite);
+    void SetCollider(Collider* _collider);
     
 protected:
     Sprite* m_Sprite = nullptr;
@@ -52,7 +57,7 @@ public:
 class StaticEntity : public Entity
 {
 public:
-    StaticEntity(const char* FileName, CollisionType CollisionType);
+    StaticEntity(const char* FileName, CollisionType CollisionType, vec2 Location, vec2 Size = vec2(100.f, 100.f));
     virtual ~StaticEntity() override = default;
     virtual void Update(float DeltaTime) override;
 };

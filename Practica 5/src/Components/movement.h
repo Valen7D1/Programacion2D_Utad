@@ -2,8 +2,9 @@
 
 #include "../Vec2.h"
 
-class EData;
 class Entity;
+
+struct EData;
 
 class Movement
 {

@@ -2,7 +2,6 @@
 
 #include "sprite.h"
 #include "../manager.h"
-#include "../utils.h"
 #include "collider.h"
 #include "movement.h"
 
@@ -11,6 +10,18 @@ Entity::~Entity()
 {
      delete m_Sprite;
      delete m_Data;
+}
+
+void Entity::SetSprite(Sprite* _sprite)
+{
+    delete m_Sprite;
+    m_Sprite = _sprite;
+}
+
+void Entity::SetCollider(Collider* _collider)
+{
+    delete m_Collider;
+    m_Collider = _collider;
 }
 
 #pragma region FollowCursor
@@ -36,38 +47,41 @@ void FollowCursor::Update(float DeltaTime)
 #pragma endregion
 
 
-#pragma region My_Circle
+#pragma region My_Cursor
 
 My_Cursor::My_Cursor()
 {
-    EData* CircleData = new EData(vec2(300.f, 300.f), vec2(50.f, 50.f));
-    ltex_t* CircleTex = Sprite::loadImage("data/circle.png");
-    m_Data = CircleData;
+    EData* CursorData = new EData(vec2(300.f, 300.f), vec2(100.f, 100.f));
+    ltex_t* CursorTex = Sprite::loadImage("data/circle.png");
+    m_Data = CursorData;
     
-    m_Sprite = new Sprite(CircleTex, CircleData, 1, 1, 1, Color::White());
-    m_Collider = Collider::CreateCollider(CollisionType::COLLISION_CIRCLE, CircleTex, CircleData);
-    m_Movement = new MyCursorMovement(this, CircleData);
+    m_Sprite = new Sprite(CursorTex, CursorData, 1, 1, 1, Color::White());
+    m_Collider = Collider::CreateCollider(CollisionType::COLLISION_CIRCLE, CursorTex, CursorData);
+    m_Movement = new MyCursorMovement(this, CursorData);
 }
 
 void My_Cursor::Update(float DeltaTime)
 {
     m_Movement->Update(DeltaTime);
     m_Sprite->update(DeltaTime);
+
+    bool const HasCollided = m_Collider->CheckCollision();
+    m_Sprite->setColor(HasCollided ? Color::Red() : Color::White());
 }
 
 #pragma endregion
 
 
-#pragma region FollowCursor
+#pragma region StaticEntity
 
-StaticEntity::StaticEntity(const char* FileName, CollisionType CollisionType) : Entity()
+StaticEntity::StaticEntity(const char* FileName, CollisionType CollisionType, vec2 Location, vec2 Size) : Entity()
 {
-    EData* BeeData = new EData(vec2(300.f, 300.f), vec2(50.f, 50.f));
-    ltex_t* BeeTex = Sprite::loadImage(FileName);
-    m_Data = BeeData;
+    EData* EntityData = new EData(Location, Size);
+    ltex_t* EntityTex = Sprite::loadImage(FileName);
+    m_Data = EntityData;
     
-    m_Sprite = new Sprite(BeeTex, BeeData, 1, 1, 1, Color::White());
-    m_Collider = Collider::CreateCollider(CollisionType, BeeTex, BeeData);
+    m_Sprite = new Sprite(EntityTex, EntityData, 1, 1, 1, Color::White());
+    m_Collider = Collider::CreateCollider(CollisionType, EntityTex, EntityData);
 }
 
 

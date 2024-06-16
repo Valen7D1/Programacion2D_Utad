@@ -35,9 +35,11 @@ public:
 public:
     static Manager* getInstance();
     vec2 GetMousePosition() { return m_MousePosition; }
+    std::vector<Entity*>& getEntities() { return m_Entities; }
 
     void Update(float DeltaTime);
     void AddEntity(Entity* _entity);
     void SetMousePosition(double _x, double _y);
+    
     
 };

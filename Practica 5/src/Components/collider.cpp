@@ -1,5 +1,6 @@
 #include "collider.h"
 
+#include "Entity.h"
 #include "../manager.h"
 
 
@@ -11,9 +12,9 @@ Collider* Collider::CreateCollider(CollisionType _type, ltex_t* _tex, EData* _da
     case COLLISION_NONE:
         return nullptr;
     case COLLISION_CIRCLE:
-        return new CircleCollider(_data,  _tex);
+        return new CircleCollider(_data);
     case COLLISION_RECT:
-        return new RectCollider(_data,  _tex);
+        return new RectCollider(_data);
     case COLLISION_PIXELS:
         Temp = new PixelsCollider(_data, _tex);
         break;
@@ -24,19 +25,53 @@ Collider* Collider::CreateCollider(CollisionType _type, ltex_t* _tex, EData* _da
 
 #pragma region AllColliders
 
+bool Collider::CheckCollision()
+{
+    Manager* manager = Manager::getInstance();
+    std::vector<Entity*> Entities = manager->getEntities();
+    
+    for (Entity* Entity : Entities)
+    {
+        if (Entity->GetCollider() != this)
+        {
+            if (Entity->GetCollider()->collides(*this))
+            {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
 bool Collider::checkCircleCircle(const vec2& pos1, float radius1, const vec2& pos2, float radius2)
 {
-    return false;
+    return pos1.Distance(pos2) <= (radius1 + radius2);
 }
 
 bool Collider::checkCircleRect(const vec2& circlePos, float circleRadius, const vec2& rectPos, const vec2& rectSize)
 {
-    return false;
+    float const HalfRectWidth = rectSize.x / 2.0f;
+    float const HalfRectHeight = rectSize.y / 2.0f;
+
+    float const ClosestX = std::max(rectPos.x - HalfRectWidth, std::min(circlePos.x, rectPos.x + HalfRectWidth));
+    float const ClosestY = std::max(rectPos.y - HalfRectHeight, std::min(circlePos.y, rectPos.y + HalfRectHeight));
+
+    float const DistanceX = circlePos.x - ClosestX;
+    float const DistanceY = circlePos.y - ClosestY;
+
+    return (DistanceX * DistanceX + DistanceY * DistanceY) < (circleRadius * circleRadius);
 }
 
 bool Collider::checkRectRect(const vec2& rectPos1, const vec2& rectSize1, const vec2& rectPos2, const vec2& rectSize2)
 {
-    return false;
+    float const XDistance = abs(rectPos1.x - rectPos2.x);
+    float const YDistance = abs(rectPos1.y - rectPos2.y);
+
+    float const XMaxDistance = (rectSize1.x/2.f) + (rectSize2.x/2.f);
+    float const YMaxDistance = (rectSize1.y/2.f) + (rectSize2.y/2.f);
+    
+    return (XDistance <= XMaxDistance && YDistance <= YMaxDistance);
 }
 
 bool Collider::checkCirclePixels(const vec2& circlePos, float circleRadius, const vec2& pixelsPos,
@@ -62,34 +97,30 @@ bool Collider::checkPixelsRect(const vec2& pixelsPos, const vec2& pixelsSize, co
 
 #pragma region CircleCollider
 
-CircleCollider::CircleCollider(EData* _data, ltex_t* _tex) : Collider(_data, COLLISION_CIRCLE)
+CircleCollider::CircleCollider(EData* _data) : Collider(_data, COLLISION_CIRCLE)
 {
-    if (_tex->height > _tex->width)
-    {
-        m_Radius = static_cast<float>(_tex->height);
-    }
-    else
-    {
-        m_Radius = static_cast<float>(_tex->width);
-    }
+    float const Width = _data->Size.x;
+    float const Height = _data->Size.y;
+    
+    m_Radius = (Height > Width) ? (Height / 2.0f) : (Width / 2.0f);
 }
 
-bool CircleCollider::collides(const Collider& other)
+bool CircleCollider::collides(Collider& other)
 {
-    return false;
+    return other.collides(m_Data->Location, m_Radius);
 }
 
-bool CircleCollider::collides(const vec2& circlePos, float circleRadius)
+bool CircleCollider::collides(vec2& circlePos, float circleRadius)
 {
     return checkCircleCircle(m_Data->Location, m_Radius, circlePos, circleRadius);
 }
 
-bool CircleCollider::collides(const vec2& rectPos, const vec2& rectSize)
+bool CircleCollider::collides(vec2& rectPos, vec2& rectSize)
 {
     return checkCircleRect(m_Data->Location, m_Radius, rectPos, rectSize);
 }
 
-bool CircleCollider::collides(const vec2& pixelsPos, const vec2& pixelsSize, const uint8_t* pixels)
+bool CircleCollider::collides(vec2& pixelsPos, vec2& pixelsSize, uint8_t* pixels)
 {
     return checkCirclePixels(m_Data->Location, m_Radius, pixelsPos, pixelsSize, pixels);
 }
@@ -99,24 +130,38 @@ bool CircleCollider::collides(const vec2& pixelsPos, const vec2& pixelsSize, con
 
 #pragma region RectangleCollider
 
-bool RectCollider::collides(const Collider& other)
+RectCollider::RectCollider(EData* _data)  : Collider(_data, COLLISION_RECT) {}
+
+vec2 RectCollider::GetCenteredLocation() const
 {
-    return false;
+    vec2 const DistanceToPivot = (vec2(0.5f, 0.5f) - m_Data->Pivot) * m_Data->Size; 
+    vec2 CenteredLocation = m_Data->Location + DistanceToPivot;
+    
+    return CenteredLocation;
 }
 
-bool RectCollider::collides(const vec2& circlePos, float circleRadius)
+bool RectCollider::collides(Collider& other)
 {
-    return checkCircleRect(circlePos, circleRadius, m_Data->Location, m_RectSize);
+    m_CenteredLocation = GetCenteredLocation();
+    return other.collides(m_CenteredLocation, m_Data->Size);
 }
 
-bool RectCollider::collides(const vec2& rectPos, const vec2& rectSize)
+bool RectCollider::collides(vec2& circlePos, float circleRadius)
 {
-    return checkRectRect(rectPos, rectSize, m_Data->Location, m_RectSize);
+    m_CenteredLocation = GetCenteredLocation();
+    return checkCircleRect(circlePos, circleRadius, m_CenteredLocation, m_Data->Size);
 }
 
-bool RectCollider::collides(const vec2& pixelsPos, const vec2& pixelsSize, const uint8_t* pixels)
+bool RectCollider::collides(vec2& rectPos, vec2& rectSize)
 {
-    return checkPixelsRect(pixelsPos, pixelsSize, pixels, m_Data->Location, m_RectSize);
+    m_CenteredLocation = GetCenteredLocation();
+    return checkRectRect(rectPos, rectSize, m_CenteredLocation, m_Data->Size);
+}
+
+bool RectCollider::collides(vec2& pixelsPos, vec2& pixelsSize, uint8_t* pixels)
+{
+    m_CenteredLocation = GetCenteredLocation();
+    return checkPixelsRect(pixelsPos, pixelsSize, pixels, m_CenteredLocation, m_Data->Size);
 }
 
 #pragma endregion
@@ -124,22 +169,24 @@ bool RectCollider::collides(const vec2& pixelsPos, const vec2& pixelsSize, const
 
 #pragma region PixelsCollider
 
-bool PixelsCollider::collides(const vec2& circlePos, float circleRadius)
+PixelsCollider::PixelsCollider(EData* _data, ltex_t* _tex) : Collider(_data, COLLISION_PIXELS), m_Tex(_tex) {}
+
+bool PixelsCollider::collides(vec2& circlePos, float circleRadius)
 {
     return false; //checkCirclePixels();
 }
 
-bool PixelsCollider::collides(const vec2& rectPos, const vec2& rectSize)
+bool PixelsCollider::collides(vec2& rectPos, vec2& rectSize)
 {
     return false; //checkPixelsRect();
 }
 
-bool PixelsCollider::collides(const vec2& pixelsPos, const vec2& pixelsSize, const uint8_t* pixels)
+bool PixelsCollider::collides(vec2& pixelsPos, vec2& pixelsSize, uint8_t* pixels)
 {
     return false; //checkPixelsPixels();
 }
 
-bool PixelsCollider::collides(const Collider& other)
+bool PixelsCollider::collides(Collider& other)
 {
     return false;
 }

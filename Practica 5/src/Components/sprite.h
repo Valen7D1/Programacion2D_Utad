@@ -2,7 +2,7 @@
 
 #include "litegfx.h"
 
-class EData;
+struct EData;
 
 class Color
 {
@@ -16,9 +16,11 @@ public:
     float getBlue() const { return b; }
     float getAlpha() const { return a; }
 
-    static Color White()    { return Color(1.0f, 1.0f, 1.0f); }
-    static Color Black()    { return Color(0.0f, 0.0f, 0.0f); }
-    static Color Gray()     { return Color(0.5f, 0.5f, 0.5f); }
+    static Color White() { return Color(1.0f, 1.0f, 1.0f); }
+    static Color Black() { return Color(0.0f, 0.0f, 0.0f); }
+    static Color Gray() { return Color(0.5f, 0.5f, 0.5f); }
+    static Color Red() { return Color(1.f, 0.f, 0.f); }
+    
     void SetColor();
     
 private:
@@ -35,8 +37,8 @@ public:
         m_HFrames(hframes),
         m_VFrames(vframes),
         m_FPS(fps),
-        m_FrameVSize(m_Texture->height/m_VFrames),
-        m_FrameHSize(m_Texture->width/m_HFrames),
+        m_FrameVSize(static_cast<float>(m_Texture->height/m_VFrames)),
+        m_FrameHSize(static_cast<float>(m_Texture->width/m_HFrames)),
         m_TimeForFrame(1.f/m_FPS),
         m_color(_color) {}
     

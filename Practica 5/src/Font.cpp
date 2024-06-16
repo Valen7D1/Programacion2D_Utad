@@ -33,9 +33,9 @@ Font* Font::load(const char* filename, float height)
         return nullptr;
     }
     
-    fseek(fontFile, 0, SEEK_END);
+    int temp = fseek(fontFile, 0, SEEK_END);
     unsigned long const FileSize = ftell(fontFile);
-    fseek(fontFile, 0, SEEK_SET);
+    int temp2 = fseek(fontFile, 0, SEEK_SET);
 
     // create Font obj
     Font* newFont = new Font();
@@ -46,7 +46,7 @@ Font* Font::load(const char* filename, float height)
 
     // Read the font data into the buffer
     size_t bytesRead = fread_s(fontBuffer, FileSize, sizeof(char), FileSize, fontFile);
-    fclose(fontFile);
+    int temp3 = fclose(fontFile);
 
     // Ruben values Todo: Ask Juan
     const unsigned int alphaSize = 512 * 512;
@@ -94,7 +94,8 @@ Font* Font::load(const char* filename, float height)
 
 vec2 Font::getTextSize(const char* text) const
 {
-	return vec2(tex->height, tex->width);
+	return vec2(static_cast<float>(tex->height),
+		static_cast<float>(tex->width));
 }
 
 void Font::draw(const char* text, const vec2& pos) const

@@ -25,5 +25,5 @@ public:
     stbtt_bakedchar* fontdata;
 
 private:
-   float m_height;
+   float m_height = 0.f;
 };
