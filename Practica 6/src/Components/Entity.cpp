@@ -1,9 +1,10 @@
 #include "Entity.h"
 
 #include "sprite.h"
-#include "../manager.h"
+#include "../World.h"
 #include "collider.h"
 #include "movement.h"
+#include "../World.h"
 
 
 Entity::~Entity()
@@ -26,9 +27,9 @@ void Entity::SetCollider(Collider* _collider)
 
 #pragma region FollowCursor
 
-FollowCursor::FollowCursor() : Entity()
+FollowCursor::FollowCursor()
 {
-    EData* BeeData = new EData(vec2(300.f, 300.f), vec2(150.f, 150.f));
+    EData* BeeData = new EData(vec2(300.f, 300.f), vec2(100.f, 100.f));
     ltex_t* BeeTex = Sprite::loadImage("data/bee_anim.png");
     m_Data = BeeData;
     
@@ -42,6 +43,7 @@ void FollowCursor::Update(float DeltaTime)
 {
     m_Movement->Update(DeltaTime);
     m_Sprite->update(DeltaTime);
+    World::GetWorld()->SetCameraLocation(m_Data->Location);
 }
 
 #pragma endregion
@@ -74,7 +76,7 @@ void My_Cursor::Update(float DeltaTime)
 
 #pragma region StaticEntity
 
-StaticEntity::StaticEntity(const char* FileName, CollisionType CollisionType, vec2 Location, vec2 Size) : Entity()
+StaticEntity::StaticEntity(const char* FileName, CollisionType CollisionType, vec2 Location, vec2 Size)
 {
     EData* EntityData = new EData(Location, Size);
     ltex_t* EntityTex = Sprite::loadImage(FileName);
@@ -88,6 +90,19 @@ StaticEntity::StaticEntity(const char* FileName, CollisionType CollisionType, ve
 void StaticEntity::Update(float DeltaTime)
 {
     m_Sprite->update(DeltaTime);
+}
+
+#pragma endregion
+
+
+#pragma region ParalaxBackgrounds
+
+ParalaxBackground::ParalaxBackground(const char* FileName, CollisionType CollisionType, vec2 Location, vec2 Size)
+{
+}
+
+void ParalaxBackground::Update(float DeltaTime)
+{
 }
 
 #pragma endregion

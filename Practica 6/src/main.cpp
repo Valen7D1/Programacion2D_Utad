@@ -1,37 +1,37 @@
 #include <string>
 
 #include "Components/Entity.h"
-#include "Components/sprite.h"
-#include "manager.h"
 #include "Components/collider.h"
+#include "World.h"
+#include "Components/camera.h"
+
 
 using namespace std;
 
-	
-const int width = 600;
-const int height = 600;
+
 
 int main() {
 	
 	glfwInit();
 	
-	
+	World* manager = World::GetWorld();
 	const char* title = "P2_Gonzalo_Valenti";
-	GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+	
+	GLFWwindow* window = glfwCreateWindow(static_cast<int>(manager->Width), static_cast<int>(manager->Height), title, nullptr, nullptr);
 	glfwMakeContextCurrent(window);
-	lgfx_setup2d(width, height);
+	lgfx_setup2d(static_cast<int>(manager->Width), static_cast<int>(manager->Height));
 
 	// Entities creation
-	Manager* manager = Manager::getInstance();
 	manager->m_Window = window;
-	//manager->AddEntity(new FollowCursor());
+	
+	Camera* FollowCamera = new Camera(vec2(300.f, 300.f), vec2(600.f, 300.f), vec2(300.f, 300.f));
+	manager->SetCamera(FollowCamera);
+	
 	manager->AddEntity(new StaticEntity("data/ball.png", COLLISION_CIRCLE, vec2(300.f, 100.f)));
 	manager->AddEntity(new StaticEntity("data/box.png", COLLISION_RECT, vec2(300.f, 300.f)));
 	manager->AddEntity(new StaticEntity("data/bee.png", COLLISION_PIXELS, vec2(300.f, 500.f)));
-
-	My_Cursor* cursor = new My_Cursor();
-	manager->AddEntity(cursor);
-
+	
+	manager->AddEntity(new FollowCursor());
 	
 	double time = glfwGetTime();
 	while (!glfwWindowShouldClose(window))
@@ -41,35 +41,11 @@ int main() {
 		double const DeltaTime = currentTime - time;
 		time = currentTime;
 
-		//MyBee->Update(static_cast<float>(DeltaTime));
 		manager->Update(static_cast<float>(DeltaTime));
-
-		// p5 mouse control
-		if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
-		{
-			ltex_t* EntityTex = Sprite::loadImage("data/circle.png");
-			cursor->SetSprite(new Sprite(EntityTex, cursor->GetData(), 1, 1, 1, Color::White()));
-			cursor->GetData()->Size = vec2(100.f, 100.f);
-			cursor->SetCollider(Collider::CreateCollider(CollisionType::COLLISION_CIRCLE, EntityTex, cursor->GetData()));
-		}
-		else if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
-		{
-			ltex_t* EntityTex = Sprite::loadImage("data/rect.png");
-			cursor->SetSprite(new Sprite(EntityTex, cursor->GetData(), 1, 1, 1, Color::White()));
-			cursor->GetData()->Size = vec2(100.f, 100.f);
-			cursor->SetCollider(Collider::CreateCollider(COLLISION_RECT, EntityTex, cursor->GetData()));
-		}
-		else if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE))
-		{
-			ltex_t* EntityTex = Sprite::loadImage("data/bee.png");
-			cursor->SetSprite(new Sprite(EntityTex, cursor->GetData(), 1, 1, 1, Color::White()));
-			cursor->GetData()->Size = vec2(100.f, 100.f);
-			cursor->SetCollider(Collider::CreateCollider(COLLISION_PIXELS, EntityTex, cursor->GetData()));
-		}
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		glfwSetWindowTitle(window, ("P5 Gonzalo Valenti"));
+		//glfwSetWindowTitle(window, ("Mouse: (" + std::to_string(manager->GetMousePosition().x) + ", "+ std::to_string(manager->GetMousePosition().y) + ")").c_str());
 		
 	}
 

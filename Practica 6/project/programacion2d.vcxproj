@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Components\camera.cpp" />
     <ClCompile Include="..\src\Components\collider.cpp">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -250,19 +251,20 @@
     </ClCompile>
     <ClCompile Include="..\src\Font.cpp" />
     <ClCompile Include="..\src\main.cpp" />
-    <ClCompile Include="..\src\manager.cpp" />
+    <ClCompile Include="..\src\World.cpp" />
     <ClCompile Include="..\src\utils.cpp" />
     <ClCompile Include="..\src\Vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\litegfx.h" />
     <ClInclude Include="..\lib\stb_image.h" />
+    <ClInclude Include="..\src\Components\camera.h" />
     <ClInclude Include="..\src\Components\collider.h" />
     <ClInclude Include="..\src\Components\Entity.h" />
     <ClInclude Include="..\src\Components\movement.h" />
     <ClInclude Include="..\src\Components\sprite.h" />
     <ClInclude Include="..\src\Font.h" />
-    <ClInclude Include="..\src\manager.h" />
+    <ClInclude Include="..\src\World.h" />
     <ClInclude Include="..\src\utils.h" />
     <ClInclude Include="..\src\Vec2.h" />
   </ItemGroup>

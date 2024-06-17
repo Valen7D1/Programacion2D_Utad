@@ -1,7 +1,7 @@
 #include "collider.h"
 
 #include "Entity.h"
-#include "../manager.h"
+#include "../World.h"
 
 
 
@@ -27,8 +27,8 @@ Collider* Collider::CreateCollider(CollisionType _type, ltex_t* _tex, EData* _da
 
 bool Collider::CheckCollision()
 {
-    Manager* manager = Manager::getInstance();
-    std::vector<Entity*> Entities = manager->getEntities();
+    World* manager = World::GetWorld();
+    std::vector<Entity*> Entities = manager->GetEntities();
     
     for (Entity* Entity : Entities)
     {
