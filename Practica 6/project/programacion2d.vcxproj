@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Components\background.cpp" />
     <ClCompile Include="..\src\Components\camera.cpp" />
     <ClCompile Include="..\src\Components\collider.cpp">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
@@ -258,6 +259,7 @@
   <ItemGroup>
     <ClInclude Include="..\lib\litegfx.h" />
     <ClInclude Include="..\lib\stb_image.h" />
+    <ClInclude Include="..\src\Components\background.h" />
     <ClInclude Include="..\src\Components\camera.h" />
     <ClInclude Include="..\src\Components\collider.h" />
     <ClInclude Include="..\src\Components\Entity.h" />

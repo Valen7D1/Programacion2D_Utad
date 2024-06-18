@@ -58,20 +58,28 @@ public:
     
 public:
     static World* GetWorld();
-    vec2 GetMousePosition() { return m_MousePosition; }
-    std::vector<Entity*>& GetEntities() { return m_Entities; }
-
     void Update(float DeltaTime);
-    void SetMousePosition(double _x, double _y);
 
-    void SetBackGround(std::vector<ltex_t*> _backgrounds);
-    ltex_t GetBackGround(size_t _layer) const;
     
-    void AddEntity(Entity* _entity);
-    void RemoveEntity(Entity* _entity);
+#pragma region Setters / Getters
+    
+    vec2 GetCameraLocation() const;
+    vec2 GetMousePosition() const { return m_MousePosition; }
+    std::vector<Entity*>& GetEntities() { return m_Entities; }
+    ParalaxBackground* GetBackGround(size_t _layer) const;
+
+    float getClearRed() const { return m_Red; }
+    float getClearGreen() const { return m_Green; }
+    float getClearBlue() const { return m_Blue; }
 
     void SetCamera(Camera* _newCamera);
     void SetCameraLocation(vec2 _newLocation);
-    vec2 GetCameraLocation() const;
+    void SetMousePosition(double _x, double _y);
+    void SetBackGround(std::vector<ParalaxBackground*> _backgrounds);
+    
+    void AddEntity(Entity* _entity);
+    void RemoveEntity(Entity* _entity);
+    
+#pragma endregion
     
 };

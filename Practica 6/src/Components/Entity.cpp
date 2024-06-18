@@ -93,16 +93,3 @@ void StaticEntity::Update(float DeltaTime)
 }
 
 #pragma endregion
-
-
-#pragma region ParalaxBackgrounds
-
-ParalaxBackground::ParalaxBackground(const char* FileName, CollisionType CollisionType, vec2 Location, vec2 Size)
-{
-}
-
-void ParalaxBackground::Update(float DeltaTime)
-{
-}
-
-#pragma endregion
